@@ -1,62 +1,100 @@
-import java.util.Date;
+import Interface.RoomMethod;
 
-public class Room {
-    private int STT;
-    private String roomID;
-    private String roomName;
-    private int roomNumber;
-    private boolean roomStatus;
+import java.time.LocalDateTime;
+
+public class Room implements RoomMethod {
+    private int stt;
+    private String id;
+    private String name;
+    private int number;
+    private boolean status;
     private User info;
-    private Date booked;
+    private LocalDateTime booked;
 
+    // Constructor
     public Room(){
 
     }
-
-    public Room(int STT, String roomName, int roomNumber){
-        this.STT = STT;
-        this.roomID = "ID" + roomNumber;
-        this.roomName = roomName;
-        this.roomNumber = roomNumber;
-        this.roomStatus = false;
+    // Constructor
+    public Room(int stt, String name, int number){
+        this.stt = stt;
+        this.id = "ID" + number;
+        this.name = name;
+        this.number = number;
+        this.status = false;
     }
 
-    public int getSTT(){
-        return this.STT;
+    // ----- Get Method -----
+    public int getStt(){
+        return this.stt;
     }
-
-    public String getRoomId(){
-        return this.roomID;
+    public String getId(){
+        return this.id;
     }
-
-    public String getRoomName(){
-        return this.roomName;
+    public String getName(){
+        return this.name;
     }
-
-    public int getRoomNumber(){
-        return this.roomNumber;
+    public int getNumber(){
+        return this.number;
     }
-
-    public Boolean getRoomStatus(){
-        return this.roomStatus;
+    public Boolean getStatus(){
+        return this.status;
     }
-
     public User getInfo(){
         return this.info;
     }
-
-    public Date getBooked(){
+    public LocalDateTime getBooked(){
         return this.booked;
     }
+    // ----- Get Method -----
 
-    public void setRoomName(String roomName){
-        this.roomName = roomName;
+    // ----- Set Method -----
+    public void setStt(int stt) {
+        this.stt = stt;
     }
-    public void setRoomNumber(int roomNumber){
-        this.roomNumber = roomNumber;
+    public void setId(String id) {
+        this.id = id;
     }
+    public void setName(String name){
+        this.name = name;
+    }
+    public void setNumber(int number){
+        this.number = number;
+    }
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+    public void setInfo(User info) {
+        this.info = info;
+    }
+    public void setBooked(LocalDateTime booked) {
+        this.booked = booked;
+    }
+    // ----- Set Method -----
 
-    public void setRoomStatus(boolean roomStatus) {
-        this.roomStatus = roomStatus;
+    // ----- Interface -----
+    public void showRoomDisplay(){
+        System.out.println("STT Phòng: " + this.getStt());
+        System.out.println("ID Phòng: " + this.getId());
+        System.out.println("Tên Phòng: " + this.getName());
+        System.out.println("Số Phòng: " + this.getNumber());
+        System.out.println("Trạng Thái Phòng: " + this.getStatus());
+        System.out.println("Thông Tin Khách Đặt Phòng: ");
+        if( getInfo() != null ){
+            System.out.println("Tên Khách Hàng: " + getInfo().getName());
+            System.out.println("Tuổi Khách Hàng: " + getInfo().getAge());
+        }
+        System.out.println("Ngày Đặt Phòng: " + getBooked());
     }
+    public void addRoom(){
+
+    }
+    public void editRoom(){
+
+    }
+    public void removeRoom(){
+
+    }
+    // ----- Interface -----
+
 }
