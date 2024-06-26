@@ -143,10 +143,14 @@ public class Main {
                             case 2:
                                 System.out.println("Vui Lòng Nhập Tên:");
                                 String returnNameUser = sc.next();
-                                manager.getUser(returnNameUser).setDateReturn(LocalDateTime.now());
-                                String returnRoomName = manager.getUser(returnNameUser).getNameRoomBooked();
-                                manager.getRoomByUser(returnRoomName).setStatus(false);
-                                manager.getRoomByUser(returnRoomName).setBooked(null);
+                                try{
+                                    manager.getUser(returnNameUser).setDateReturn(LocalDateTime.now());
+                                    String returnRoomName = manager.getUser(returnNameUser).getNameRoomBooked();
+                                    manager.getRoomByUser(returnRoomName).setStatus(false);
+                                    manager.getRoomByUser(returnRoomName).setBooked(null);
+                                }catch (IndexOutOfBoundsException ex){
+                                    System.out.println("Not Founded Name");
+                                }
                                 break;
                         }
                     }while(thaoTacTrangUser != 0);

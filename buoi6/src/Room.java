@@ -1,6 +1,7 @@
 import Interface.RoomMethod;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Room implements RoomMethod {
     private int stt;
@@ -73,6 +74,15 @@ public class Room implements RoomMethod {
     // ----- Set Method -----
 
     // ----- Interface -----
+    public String format(LocalDateTime dateTime){
+        if( dateTime != null ){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = dateTime.format(formatter);
+            return formattedDateTime;
+        }
+        return null;
+
+    }
     public void showRoomDisplay(){
         System.out.println("STT Phòng: " + this.getStt());
         System.out.println("ID Phòng: " + this.getId());
@@ -84,7 +94,7 @@ public class Room implements RoomMethod {
             System.out.println("Tên Khách Hàng: " + getInfo().getName());
             System.out.println("Tuổi Khách Hàng: " + getInfo().getAge());
         }
-        System.out.println("Ngày Đặt Phòng: " + getBooked());
+        System.out.println("Ngày Đặt Phòng: " + format(getBooked()));
     }
     public void addRoom(){
 

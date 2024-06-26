@@ -2,6 +2,7 @@ import Interface.UserMethod;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class User implements UserMethod {
     private int stt;
@@ -78,14 +79,23 @@ public class User implements UserMethod {
     // ----- Set Method -----
 
     // ----- Interface -----
+    public String format(LocalDateTime dateTime){
+        if( dateTime != null ){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = dateTime.format(formatter);
+            return formattedDateTime;
+        }
+        return null;
+
+    }
     public void showUserDisplay(){
         System.out.println("STT Khách Hàng: " + this.getStt());
         System.out.println("Tên Khách Hàng: " + this.getName());
         System.out.println("Tuổi Khách Hàng: " + this.getAge());
-        System.out.println("Ngày Giờ Đặt Phòng: " + this.getDateBooked());
+        System.out.println("Ngày Giờ Đặt Phòng: " + format(this.getDateBooked()));
         System.out.println("Tên Phòng: " + this.getNameRoomBooked());
         System.out.println("Số Phòng: " + this.getNumberRoomBooked());
-        System.out.println("Ngày Giờ Trả Phòng: " + this.getDateReturn());
+        System.out.println("Ngày Giờ Trả Phòng: " + format(this.getDateReturn()));
     }
     public void addUser(){
 
