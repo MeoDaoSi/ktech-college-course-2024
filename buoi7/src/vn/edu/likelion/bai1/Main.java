@@ -1,5 +1,8 @@
 package vn.edu.likelion.bai1;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args){
 
@@ -11,8 +14,13 @@ public class Main {
         System.out.println("Initial Deposit: $5000.00");
         System.out.println("OverdraftLimit: $1000.00");
 
+        List<Account> bank = new ArrayList<>();
+
         Account savingsAccount = new SavingsAccount(1000);
         Account currentAccount = new CurrentAccount(5000);
+
+        bank.add(savingsAccount);
+        bank.add(currentAccount);
 
         System.out.println("Now deposit $100 to Savings Account.");
         System.out.println("Now deposit $500 to Current Account.");

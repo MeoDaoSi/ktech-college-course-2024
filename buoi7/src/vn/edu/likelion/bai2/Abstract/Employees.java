@@ -5,6 +5,6 @@ public abstract class Employees {
     public double baseSalary;
     public double bonus;
 
-    abstract void calculatorSalary();
-    abstract void displayInfo();
+    public abstract double calculatorSalary();
+    public abstract void displayInfo();
 }
