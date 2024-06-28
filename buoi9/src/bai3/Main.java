@@ -1,5 +1,8 @@
 package bai3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     // Method check number of digits in integer
     public static int getFirstElement(int input){
@@ -15,6 +18,7 @@ public class Main {
     }
     public static void main(String[] args){
         int a = -123;
-        System.out.println(getFirstElement(a));
+        List<Integer> arr = new ArrayList<Integer>();
+        System.out.printf("botd %d %s", 1 - 1,"sadas");
     }
 }
