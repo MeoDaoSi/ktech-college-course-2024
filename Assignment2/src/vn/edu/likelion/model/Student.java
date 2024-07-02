@@ -2,51 +2,45 @@ package vn.edu.likelion.model;
 
 import java.time.LocalDate;
 
-public class Student {
-    private int mssv;
-    private String name;
-    private LocalDate birthDate;
-    private String cccd;
+public class Student extends Employees{
+    private int maHV;
     // Constructor
     public Student(){
-
+        super();
     }
     public Student(String name, LocalDate birthDate, String cccd){
-        this.name = name;
-        this.birthDate = birthDate;
-        this.cccd = cccd;
+        super(name,birthDate,cccd);
     }
     // Getter
-    public int getMssv() {
-        return mssv;
+    public int getMaHV() {
+        return maHV;
     }
     public String getName() {
-        return name;
+        return super.getName();
     }
     public LocalDate getBirthDate() {
-        return birthDate;
+        return super.getBirthDate();
     }
     public String getCccd() {
-        return cccd;
+        return super.getCccd();
     }
     // Setter
-    public void setMssv(int mssv) {
-        this.mssv = mssv;
+    public void setId(int maHV) {
+        this.maHV = maHV;
     }
     public void setName(String name) {
-        this.name = name;
+        super.setName(name);
     }
     public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+        super.setBirthDate(birthDate);
     }
     public void setCccd(String cccd) {
-        this.cccd = cccd;
+        super.setCccd(cccd);
     }
-
+    @Override
+    // Override method showInfo from Employees class
     public void showInfo(){
-        System.out.println("MSSV: " + this.mssv);
-        System.out.println("First Name: " + this.name);
-        System.out.println("Birth Date: " + this.birthDate);
-        System.out.println("CCCD: " + this.cccd);
+        System.out.println("ID Student: " + maHV);
+        super.showInfo();
     }
 }
