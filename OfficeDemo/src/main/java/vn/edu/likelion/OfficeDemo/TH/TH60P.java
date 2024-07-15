@@ -4,6 +4,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -51,9 +54,42 @@ public class TH60P {
             }
         }
     }
+    public static void writeFileWord(BufferedReader data){
+
+        String s;
+
+        XWPFDocument document = new XWPFDocument();
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+
+        try{
+            while( (s = data.readLine()) != null ){
+                // cat chuoi thanh mang
+                if(s.split("\t+",3)[2].equals("0")){
+                    // ghi chuoi vao tung cell
+                    run.setText(Base64.getEncoder().encodeToString(s.getBytes()) + "\n");
+                }
+            }
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+            // luu vao file vat ly
+            FileOutputStream destFile = new FileOutputStream(
+                    "StudentsList_" + LocalDate.now().format(formatter) + ".docx"
+            );
+            document.write(destFile);
+        }catch (IOException io){
+            io.fillInStackTrace();
+        }finally {
+            try{
+                document.close();
+            }catch (IOException io1){
+                io1.fillInStackTrace();
+            }
+        }
+    }
     public static void main(String[] args) throws IOException {
 
         BufferedReader docxFile = new BufferedReader(new FileReader("StudentsList.txt"));
-        writeFileExcel(docxFile);
+//        writeFileExcel(docxFile);
+        writeFileWord(docxFile);
     }
 }
