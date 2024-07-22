@@ -9,13 +9,21 @@ public class Connect {
 
     private Connection connect = null;
 
-    public void openConnect() throws SQLException{
-        connect = DriverManager.getConnection(url,username,password);
+    public void openConnect(){
+        try{
+            connect = DriverManager.getConnection(url,username,password);
+        }catch(SQLException exception){
+            System.out.println(exception.getMessage());
+        }
     }
 
-    public void closeConnect() throws SQLException{
-        if( connect != null){
-            connect.close();
+    public void closeConnect(){
+        try{
+            if( connect != null){
+                connect.close();
+            }
+        }catch(SQLException exception){
+            System.out.println(exception.getMessage());
         }
     }
 

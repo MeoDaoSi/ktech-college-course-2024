@@ -1,46 +1,109 @@
 package vn.edu.likelion.ConnectDB;
 
 import vn.edu.likelion.ConnectDB.database.Connect;
-import vn.edu.likelion.ConnectDB.services.FileTxt;
-import vn.edu.likelion.ConnectDB.services.UserServices;
+import vn.edu.likelion.ConnectDB.model.Permission;
+import vn.edu.likelion.ConnectDB.model.Student;
+import vn.edu.likelion.ConnectDB.model.User;
 
-import java.io.IOException;
 import java.sql.*;
-import java.util.Base64;
+import java.util.Scanner;
 
 public class Application {
+
+    public static Scanner sc = new Scanner(System.in);
+
+    public static void showOperation(String[] arr){
+        for ( int i=0 ; i<3 ; i++ ){
+            if( arr[i] == null ){
+                continue;
+            }
+            String operation = arr[i];
+            switch (operation){
+                case "1": {
+                    System.out.println("1. Show Student List");
+                    break;
+                }
+                case "2": {
+                    System.out.println("2. Show Student Attendance List");
+                    break;
+                }
+                case "3": {
+                    System.out.println("3. Take Attendance");
+                    break;
+                }
+                default: {
+                    // do nothing
+                }
+            }
+        }
+    };
+
     public static void main(String[] args) {
 
-        String query = "Insert into Z_STUDENT(id, name) VALUES (?, ?)";
-        UserServices userServices = new UserServices();
+        String[] arr = new String[4];
+        String[] permission;
 
-        // doc file txt
-        try{
-            // tao doi tuong Connect
-            Connect connect = new Connect();
-            // connect db
-            connect.openConnect();
+        User userService = new User();
+        Permission permissionService = new Permission();
+        Student studentService = new Student();
 
-//            FileTxt file = new FileTxt("StudentsList.txt");
-//            String line;
-//            while((line = file.getReader().readLine()) != null ){
-//                // gui cau lenh truy van toi database
-//                PreparedStatement state = connect.getConnect().prepareStatement(query);
-//                state.setString(1,line.split("\t",3)[0]);
-//                state.setString(2,line.split("\t",3)[1]);
-//                // thuc hien truy van
-//                ResultSet resultSet = state.executeQuery();
-//            }
+        // tao doi tuong Connect
+        Connect connect = new Connect();
+        // connect db
+        connect.openConnect();
 
-//            userServices.insertUser(connect,1,"freeze1","123456");
-//            userServices.insertUser(connect,2,"freeze2","123456");
-//            userServices.insertUser(connect,3,"freeze3","123456");
-//            userServices.insertUser(connect,4,"freeze4","123456");
+        while(true){
 
-//            file.closeFile();
-            connect.closeConnect();
-        }catch (SQLException e) {
-            throw new RuntimeException(e);
+            if(arr[0] == null){
+
+                System.out.println("Please login");
+                System.out.println("Username:");
+                String username = sc.nextLine();
+                System.out.println("Password:");
+                String password = sc.nextLine();
+
+                try{
+                    arr = userService.findUser(connect,username,password);
+                    if(arr[0] == null){
+                        break;
+                    }
+                }catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
+            System.out.println("Welcome " + arr[1] + " to Homepage");
+            System.out.println("Please choose operation: ");
+            permission = permissionService.getPermission(connect,arr[3]);
+            showOperation(permission);
+
+            int operation1 = sc.nextInt();
+
+            if(!permissionService.checkPermission(permission,Integer.toString(operation1))){
+                System.out.println("Operation Denied. Access Denied !!!");
+                continue;
+            }
+
+            switch (operation1){
+                case 1: {
+                    studentService.getStudent(connect);
+                    break;
+                }
+                case 2: {
+                    studentService.getStudentAttendanceList(connect);
+                    break;
+                }
+                case 3: {
+                    studentService.takeAttendance(connect,arr[0]);
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
         }
+
+        connect.closeConnect();
     }
 }

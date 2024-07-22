@@ -7,14 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
 
-public class UserServices {
-
-    public void insertUser(Connect connect, int id, String username, String password) throws SQLException {
-        String query = "insert into z_users values(?, ?, ?)";
-        PreparedStatement userState = connect.getConnect().prepareStatement(query);
-        userState.setInt(1,id);
-        userState.setString(2, username);
-        userState.setString(3, Base64.getEncoder().encodeToString(password.getBytes()));
-        userState.executeQuery();
-    }
+public interface UserServices {
+    public void insertUser(Connect connect, int id, String username, String password) throws SQLException;
+    public void selectAllUser(Connect connect) throws SQLException;
+    public String[] findUser(Connect connect, String username, String password) throws SQLException;
 }
