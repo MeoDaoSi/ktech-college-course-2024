@@ -32,7 +32,7 @@ public class Application {
                     break;
                 }
                 default: {
-                    // do nothing
+                    break;
                 }
             }
         }
