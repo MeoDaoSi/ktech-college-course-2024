@@ -111,4 +111,17 @@ public class User {
         statement.executeQuery();
         System.out.println("Update Password Success!");
     }
+    // ----- Method Remove User -----
+    public void remove(
+            Connect connect,
+            PreparedStatement statement,
+            ResultSet rs,
+            int id
+    ) throws SQLException {
+        String SQLQuery = "DELETE FROM TB1_USERS WHERE id=?";
+        statement = connect.getConnect().prepareStatement(SQLQuery);
+        statement.setInt(1,id);
+        statement.executeQuery();
+        System.out.println("Delete Success!");
+    }
 }

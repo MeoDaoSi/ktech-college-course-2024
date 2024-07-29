@@ -4,6 +4,7 @@ import org.apache.poi.ss.usermodel.*;
 import vn.edu.likelion.store_manager.db.Connect;
 import vn.edu.likelion.store_manager.models.Attribute;
 import vn.edu.likelion.store_manager.models.Product;
+import vn.edu.likelion.store_manager.models.Store;
 import vn.edu.likelion.store_manager.models.User;
 
 import java.io.File;
@@ -20,6 +21,7 @@ public class Application {
     private static User user = null;
     private static ArrayList<Product> products = new ArrayList<>();
     private static ArrayList<Attribute> attributes = new ArrayList<>();
+    private static Store store = null;
     private static void initConnect(Connect connect, PreparedStatement statement, ResultSet rs) throws FileNotFoundException, IOException {
         FileInputStream inputStream = new FileInputStream(new File("DanhSachSP.xlsx"));
         Workbook workbook = WorkbookFactory.create(inputStream);
@@ -166,29 +168,27 @@ public class Application {
                     break;
                 case 4:
                     // Check Permission
-//                    if(!user.getRole().equals("ADMIN")){
-//                        System.out.println("Access Denied!");
-//                        break;
-//                    }
-//                    System.out.println("Enter Username");
-//                    username = sc.next();
-//                    System.out.println("Enter New Password");
-//                    password = sc.next();
-//
-//                    try{
-//                        // Open Connect
-//                        connect.openConnect();
-//                        user.changePassword(connect,statement,rs,username,password);
-//                    }catch(SQLException ex){
-//                        System.out.println(ex.getMessage());
-//                    }finally{
-//                        try{
-//                            // Close Connect
-//                            connect.closeConnect();
-//                        }catch(SQLException ex1){
-//                            System.out.println(ex1.getMessage());
-//                        }
-//                    }
+                    if(!user.getRole().equals("ADMIN")){
+                        System.out.println("Access Denied!");
+                        break;
+                    }
+                    System.out.println("Enter User ID:");
+                    int id = sc.nextInt();
+
+                    try{
+                        // Open Connect
+                        connect.openConnect();
+                        user.remove(connect,statement,rs,id);
+                    }catch(SQLException ex){
+                        System.out.println(ex.getMessage());
+                    }finally{
+                        try{
+                            // Close Connect
+                            connect.closeConnect();
+                        }catch(SQLException ex1){
+                            System.out.println(ex1.getMessage());
+                        }
+                    }
                     break;
                 case 5:
                     // Check Permission
@@ -264,6 +264,31 @@ public class Application {
                         }
                     }
                     break;
+                case 8:
+                    // Check Permission
+                    if(!user.getRole().equals("ADMIN")){
+                        System.out.println("Access Denied!");
+                        break;
+                    }
+                    System.out.println("Enter Store ID: ");
+                    store_id = sc.nextInt();
+                    System.out.println("Enter New Store ID: ");
+                    int newStore = sc.nextInt();
+                    try{
+                        // Open Connect
+                        connect.openConnect();
+                        removeStore(connect,statement,rs,store_id,newStore);
+                    }catch(SQLException ex){
+                        System.out.println(ex.getMessage());
+                    }finally{
+                        try{
+                            // Close Connect
+                            connect.closeConnect();
+                        }catch(SQLException ex1){
+                            System.out.println(ex1.getMessage());
+                        }
+                    }
+                    break;
                 case 9:
                     // Check Permission
                     if(!user.getRole().equals("ADMIN")){
@@ -275,10 +300,66 @@ public class Application {
                     try{
                         // Open Connect
                         connect.openConnect();
-                        addProductByAdmin(connect,statement,rs,store_id);
+                        addProduct(connect,statement,rs,store_id);
                     }catch(SQLException ex){
                         System.out.println(ex.getMessage());
-                        System.out.println("Please Assign To User!");
+                    }finally{
+                        try{
+                            // Close Connect
+                            connect.closeConnect();
+                        }catch(SQLException ex1){
+                            System.out.println(ex1.getMessage());
+                        }
+                    }
+                    break;
+                case 10:
+                    // Check Permission
+                    if(!user.getRole().equals("ADMIN")){
+                        System.out.println("Access Denied!");
+                        break;
+                    }
+                    try{
+                        // Open Connect
+                        connect.openConnect();
+                        displayAllProduct(connect,statement,rs);
+                    }catch(SQLException ex){
+                        System.out.println(ex.getMessage());
+                    }finally{
+                        try{
+                            // Close Connect
+                            connect.closeConnect();
+                        }catch(SQLException ex1){
+                            System.out.println(ex1.getMessage());
+                        }
+                    }
+                    break;
+                case 11:
+                    System.out.println("Enter Store ID: ");
+                    store_id = sc.nextInt();
+                    try{
+                        // Open Connect
+                        connect.openConnect();
+                        addProduct(connect,statement,rs,store_id);
+                    }catch(SQLException ex){
+                        System.out.println(ex.getMessage());
+                    }finally{
+                        try{
+                            // Close Connect
+                            connect.closeConnect();
+                        }catch(SQLException ex1){
+                            System.out.println(ex1.getMessage());
+                        }
+                    }
+                    break;
+                case 12:
+                    System.out.println("Enter Store ID: ");
+                    store_id = sc.nextInt();
+                    try{
+                        // Open Connect
+                        connect.openConnect();
+                        displayProduct(connect,statement,rs,store_id);
+                    }catch(SQLException ex){
+                        System.out.println(ex.getMessage());
                     }finally{
                         try{
                             // Close Connect
@@ -314,11 +395,12 @@ public class Application {
             System.out.println("7. Edit Store");
             System.out.println("8. Remove Store");
             System.out.println("9. Add Product");
+            System.out.println("10. Show All Products");
             System.out.println("0. Log out");
         }
         if(user != null && user.getRole().equals("USER")){
-            System.out.println("8. Show Detail Store!");
-            System.out.println("9. Add Product");
+            System.out.println("11. Add Product");
+            System.out.println("12. Show Detail Store!");
             System.out.println("0. Log out");
         }
         System.out.println(" ======================== ");
@@ -337,7 +419,7 @@ public class Application {
         }
     }
     // ----- Method Display detail Store -----
-    public static void getDetailStore(
+    public static Store getDetailStore(
             Connect connect, PreparedStatement statement, ResultSet rs, int id
     ) throws SQLException {
         String SQLQuery = "Select * from tb1_stores where id=? ";
@@ -346,10 +428,9 @@ public class Application {
         rs = statement.executeQuery();
         if(!rs.next()){
             System.out.println("----- Store Not Founded -----");
-            return;
+            return null;
         }
-        System.out.print(rs.getInt(1) + "\t\t");
-        System.out.println(rs.getString(2));
+        return new Store(rs.getInt(1),rs.getString(2),rs.getInt(3));
     }
     // ----- Method Add Store -----
     public static void addStore(
@@ -379,15 +460,18 @@ public class Application {
         statement.executeQuery();
         System.out.println("Store Updated");
     }
-    public static void addProductByAdmin(
+    public static void addProduct(
             Connect connect, PreparedStatement statement, ResultSet rs, int store_id
     ) throws SQLException {
-        String SQLQuery2 = "select * from tb1_stores where id=?";
-        statement = connect.getConnect().prepareStatement(SQLQuery2);
-        statement.setInt(1,store_id);
-        rs = statement.executeQuery();
-        if(!rs.next()){
-            System.out.println("Store Not Founded");
+        store = getDetailStore(connect,statement,rs,store_id);
+        if( store == null ){
+            return;
+        }
+        if( store.getUser_id()==0 ){
+            System.out.println("Please Assign To User !");
+        }
+        if( user.getRole().equals("USER") && user.getId()!= store.getUser_id() ){
+            System.out.println("Can Not Add Product To Store !");
             return;
         }
         String SQLQuery = "Insert into tb1_products values(?,?,?,?,?)";
@@ -412,5 +496,69 @@ public class Application {
         products.clear();
         attributes.clear();
         System.out.println("Add Product Success!");
+    }
+    // Method Display All Product
+    public static void displayAllProduct(
+            Connect connect, PreparedStatement statement, ResultSet rs
+    ) throws SQLException {
+        String SQLQuery = "select * from tb1_products";
+        statement = connect.getConnect().prepareStatement(SQLQuery);
+        rs = statement.executeQuery();
+        System.out.println("Name" + "\t" + "Store" + "\t" + "Price" + "\t" + "Quantity");
+        while(rs.next()){
+            store = getDetailStore(connect,statement,rs,rs.getInt(3));
+            System.out.print(rs.getString(2) + "\t");
+            System.out.print(store.getName() + "\t");
+            System.out.print(rs.getDouble(4) + "\t");
+            System.out.print(rs.getInt(5) + "\n");
+        }
+    }
+    public static void displayProduct(
+            Connect connect, PreparedStatement statement, ResultSet rs, int store_id
+    ) throws SQLException {
+        String SQLQuery = "select * from tb1_products where store_id=?";
+        statement = connect.getConnect().prepareStatement(SQLQuery);
+        statement.setInt(1, store_id);
+        rs = statement.executeQuery();
+        System.out.println("Name" + "\t" + "Store" + "\t" + "Price" + "\t" + "Quantity");
+        while(rs.next()){
+            store = getDetailStore(connect,statement,rs,rs.getInt(3));
+            System.out.print(rs.getString(2) + "\t");
+            System.out.print(store.getName() + "\t");
+            System.out.print(rs.getDouble(4) + "\t");
+            System.out.print(rs.getInt(5) + "\n");
+            displayAttributes(connect,statement,rs,rs.getInt(1));
+        }
+    }
+    public static void removeStore(
+            Connect connect, PreparedStatement statement, ResultSet rs, int store_id, int newStore
+    ) throws SQLException {
+        String SQLQuery = "UPDATE tb1_products \n" +
+                "SET store_id = ? \n" +
+                "WHERE store_id = ?";
+        statement = connect.getConnect().prepareStatement(SQLQuery);
+        statement.setInt(1, newStore);
+        statement.setInt(2, store_id);
+        statement.executeQuery();
+
+        // Sql Delete
+        String SQLQuery1 = "DELETE FROM TB1_STORES WHERE id=?";
+        statement = connect.getConnect().prepareStatement(SQLQuery1);
+        statement.setInt(1, store_id);
+        statement.executeQuery();
+        System.out.println("Delete Success !");
+    }
+    public static void displayAttributes(
+            Connect connect, PreparedStatement statement, ResultSet rs, int product_id
+    ) throws SQLException {
+        String SQLQuery = "select * from tb1_attributes where product_id=?";
+        statement = connect.getConnect().prepareStatement(SQLQuery);
+        statement.setInt(1, product_id);
+        rs = statement.executeQuery();
+        while(rs.next()){
+            System.out.print(rs.getString(2) + "\t");
+            System.out.print(rs.getString(4) + "\n");
+        }
+        System.out.println("====================");
     }
 }
