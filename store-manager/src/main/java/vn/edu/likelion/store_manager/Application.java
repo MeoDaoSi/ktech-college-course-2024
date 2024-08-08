@@ -448,7 +448,7 @@ public class Application {
         statement.executeQuery();
         System.out.println("Add Store Success");
     }
-    // ----- Method Add Store -----
+    // ----- Method Edit Store -----
     public static void editStore(
             Connect connect, PreparedStatement statement, ResultSet rs, int id, String name, int user_id
     ) throws SQLException {
