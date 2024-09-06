@@ -1,26 +1,27 @@
-package com.example.demo.entity;
+package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
-@Entity
-@Data
+import java.util.ArrayList;
+import java.util.List;
+
 @Table( name = "users" )
+@Data
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class UserEntity {
 
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY )
-    private int id;
+    private long id;
 
-    private String name;
     private String email;
     private String password;
+    private String role = "ROLE_USER";
 
-    private String role;
 }
